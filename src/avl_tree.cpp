@@ -20,10 +20,6 @@ struct AVLNode {
 };
 
 AVLTree::AVLTree() {
-  // TODO: Set up the tree, if anything is needed beyond an empty root.
-
-  // This line only silences a compiler warning about an unused member.
-  // Delete it once your code uses root_.
   (void)root_;
 }
 void Destroy(AVLNode * Node){
@@ -140,22 +136,15 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
       if (temp == nullptr) {
         temp = Node;
         Node = nullptr;
-      } else{ // One child case
-        //AVLNode *temp = Node->left ? Node->left : Node->right;
-				delete Node; // delete the current node
-				return temp; // return the child to be linked to the parent
+      } else{ 
+				delete Node; 
+				return temp; 
       }
         } else {
-            // node with two children: Get the 
-            // inorder successor (smallest in 
-            // the right subtree)
             AVLNode * temp = minValNode(Node->right);
 
-            // Copy the inorder successor's 
-            // data to this node
             Node->key = temp->key;
 
-            // Delete the inorder successor
             Node->right = eraseHelper(Node->right, temp->key);
         }
     }
@@ -187,7 +176,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
   return Node;
 }
 
-// alternative
+
 bool AVLTree::erase(std::int64_t key) {
   std::vector<std::int64_t> check = keys();
   std::vector<std::int64_t>::iterator it;
@@ -281,5 +270,5 @@ double AVLTree::average_depth() const {
   }
   double sum=0;
   Adder(root_,sum);
-  return sum/size();  // TODO
+  return sum/size();  
 }
