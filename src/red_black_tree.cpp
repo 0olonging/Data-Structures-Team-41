@@ -421,7 +421,7 @@ bool RedBlackTree::erase(std::int64_t key) {
 
      transplant(root_, nil_, curr, successor);
      successor->left = curr->left;
-     successor->left->parent = succesor;
+     successor->left->parent = successor;
      successor->color = curr->color;
 
      if (removedColor == Color::Black)
@@ -471,17 +471,235 @@ std::size_t RedBlackTree::size() const {
 }
 
 std::vector<std::int64_t> RedBlackTree::keys() const {
-  return {};  // TODO
+
+  // Return all keys in ascending order
+  std::vector<std::int64_t> result;
+  RBNode* curr = root_;
+
+  // Return early
+  if (curr == nil_)
+  {
+    return result;
+  }
+
+  // Start with the leftmost node
+  while (curr->left != nil_)
+  {
+    curr = curr->left;
+  }
+
+  // Left node first
+  while (curr != nil_)
+  {
+    result.push_back(curr->key);
+    
+    // Go to right if it exists
+    if (curr->right != nil_)
+    {
+      curr = curr->right;
+
+      // Go to leftmost node of right subtree
+      while (curr->left != nil_)
+      {
+        curr = curr->left;
+      }
+    }
+    else {
+
+      // No right subtree present, so go up
+      RBNode* parent = curr->parent;
+
+      while (parent != nil_ && curr == parent->right)
+      {
+        curr = parent;
+        parent = parent->parent;
+      }
+
+      curr = parent;
+    }
+  }
+
+  // Return the result vector
+  return result;
 }
 
-void RedBlackTree::export_shape(std::ostream & /*out*/) const {
-  // TODO
+void RedBlackTree::export_shape(std::ostream & out) const {
+  
+  // Empty tree
+  if (root_ == nil_)
+  {
+    //out << "(export_shape) Empty tree" << std::endl;
+    out << "root -" << std::endl;
+    return;
+  }
+
+  // Print root
+  out << "root " << root_->key << std::endl;
+
+  // Get all keys in ascending order
+  std::vector<std::int64_t> allKeys = keys();
+
+  // Print all keys
+  for (std::int64_t key : allKeys)
+  {
+    RBNode* curr = root_;
+
+    // Find the node with the current key
+    while (curr != nil_ && key != curr->key)
+    {
+      // If key is greater than the current node's key go right, else go left
+      if (key > curr->key)
+      {
+        curr = curr->right;
+      } 
+      else 
+      {
+        curr = curr->left;
+      }
+    }
+
+    // Print current key
+    out << curr->key << " ";
+
+    // Print color
+    if (curr->color == Color::Red)
+    {
+      out << "R ";
+    }
+    else
+    {
+      out << "B ";
+    }
+
+    // Print left child, or '-' if nil
+    if (curr->left != nil_) 
+    {
+      out << curr->left->key << " ";
+    }
+    else 
+    {
+      out << "- ";
+    }
+
+    // Print right child, or '-' if nil
+    if (curr->right != nil_) 
+    {
+      //out << curr->right->key << " ";
+      out << curr->right->key;
+    } 
+    else 
+    {
+      //out << "- ";
+      out << "-";
+    }
+
+    out << std::endl; // Add a blank line between nodes
+  }
+
+
 }
 
 int RedBlackTree::height() const {
-  return -1;  // TODO
+
+  // Empty tree, return -1
+  if (root_ == nil_)
+  {
+    return -1;
+  }
+
+  // Track max height
+  int maxHeight = 0;
+
+  // Nodes to visit and their corresponding depths
+  std::vector<RBNode*> nodes;
+  std::vector<int> depths;
+
+  // Start with the root node at depth 0
+  nodes.push_back(root_);
+  depths.push_back(0);
+
+  // While there are nodes to visit
+  while (!nodes.empty())
+  {
+
+    // Get the current node and remove it from the stack
+    RBNode* current = nodes.back();
+    nodes.pop_back();
+
+    // Get the current depth and remove it from the depths vector
+    int currentDepth = depths.back();
+    depths.pop_back();
+
+    // Update maxHeight if the current depth is greater
+    if (currentDepth > maxHeight)
+    {
+      maxHeight = currentDepth;
+    }
+
+    // Add the left and right children to the stack if they are not nil
+    if (current->left != nil_)
+    {
+      nodes.push_back(current->left);
+      depths.push_back(currentDepth + 1);
+    }
+
+    if (current->right != nil_)
+    {
+      nodes.push_back(current->right);
+      depths.push_back(currentDepth + 1);
+    }
+  }
+
+  return maxHeight;
 }
 
 double RedBlackTree::average_depth() const {
-  return 0.0;  // TODO
+
+  // Empty tree, return 0.0
+  if (root_ == nil_)
+  {
+    return 0.0;
+  }
+
+  // Nodes to visit and their corresponding depths
+  // double because calculating average depth
+  double totalDepth = 0.0;
+  int nodeCount = 0;
+
+  std::vector<RBNode*> nodes;
+  std::vector<int> depths;
+
+  // Start with the root node at depth 0
+  nodes.push_back(root_);
+  depths.push_back(0);
+
+  while (!nodes.empty())
+  {
+    // Get the current node and remove it from the stack
+    RBNode* current = nodes.back();
+    nodes.pop_back();
+
+    // Get the current depth and remove it from the depths vector
+    int currentDepth = depths.back();
+    depths.pop_back();
+
+    // Update totalDepth and nodeCount
+    totalDepth += currentDepth;
+    nodeCount++;
+
+    // Add the left and right children to the stack if they are not nil
+    if (current->left != nil_)
+    {
+      nodes.push_back(current->left);
+      depths.push_back(currentDepth + 1);
+    }
+
+    if (current->right != nil_)
+    {
+      nodes.push_back(current->right);
+      depths.push_back(currentDepth + 1);
+    }
+  }
+
+  return totalDepth / nodeCount;
 }
