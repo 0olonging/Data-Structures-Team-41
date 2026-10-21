@@ -1,4 +1,4 @@
-# Target: Red-Black recoloring and rotation cases
+# Red-Black recoloring and rotation cases
 
 I 10 1
 I 20 2

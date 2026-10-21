@@ -1,4 +1,4 @@
-# Target: AVL LL rotation case
+# AVL LL rotation case
 
 I 30 1
 I 20 2

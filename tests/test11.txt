@@ -1,4 +1,4 @@
-# Target: worst-case sorted sequence
+# Worst-case sorted sequence
 
 I 1 1
 I 2 2
