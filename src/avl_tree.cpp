@@ -138,6 +138,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
         Node = nullptr;
       } else{ 
 				delete Node; 
+        size_--;
 				return temp; 
       }
         } else {
@@ -253,6 +254,7 @@ int AVLTree::height() const {
   if(root_ == nullptr){
     return 0;
   }
+  root_->height = 1+ std::max(nodeHeight(root_->left), nodeHeight(root_->right));
   return root_->height;  
 }
 
