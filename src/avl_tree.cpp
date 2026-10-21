@@ -32,7 +32,6 @@ void Destroy(AVLNode * Node){
 }
 AVLTree::~AVLTree() {
   Destroy(root_);
-  delete root_;
   root_ = nullptr;
 }
 
