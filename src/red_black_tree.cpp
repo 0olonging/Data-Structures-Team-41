@@ -43,12 +43,30 @@ RedBlackTree::RedBlackTree() {
 
 }
 
+// Helper function to recursively destroy the tree
+void destroyTree(RBNode* node, RBNode* nil) {
+  if (node == nil) {
+    return;
+  }
+
+  destroyTree(node->left, nil);
+  destroyTree(node->right, nil);
+  delete node;
+}
+
 RedBlackTree::~RedBlackTree() {
-  // TODO: Release all nodes.
+  // TODO
+  destroyTree(root_, nil_);
+
+  delete nil_;
+
+  root_ = nullptr;
+  nil_ = nullptr;
 }
 
 /* Helper functions -> called often in other functions
   so might as well make them into functions instead of repeating*/
+
 void leftRotate(RBNode*& root, RBNode* nil, RBNode* x)
 {
   RBNode* y = x->right;
@@ -326,6 +344,7 @@ bool RedBlackTree::insert(std::int64_t key, std::int64_t value) {
   while (current != nil_) {        // descend until reaching an empty spot
     parent = current;
     if (key == current->key) {
+      delete newNode;  // Clean up the allocated node
       return false; // Duplicate found
     }
 
