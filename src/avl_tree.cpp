@@ -10,8 +10,8 @@
 struct AVLNode {
   std::int64_t key;
   std::int64_t value;
-  std::int64_t height=-1;
-  std::int64_t BF=0;
+  int height=0;
+  int BF=0;
   AVLNode * left;
   AVLNode * right;
   AVLNode(std::int64_t k,std::int64_t v):key{k},value{v},left{nullptr},right{nullptr}{
@@ -35,12 +35,12 @@ AVLTree::~AVLTree() {
   root_ = nullptr;
 }
 
-std::int64_t nodeHeight(AVLNode * Node){
-  return Node?Node->height:0;
+int nodeHeight(AVLNode * Node){
+  return Node?Node->height:-1;
 }
 
-std::int64_t nodeBF(AVLNode * Node){
-  return Node?(nodeHeight(Node->left))-nodeHeight(Node->right):0;
+int nodeBF(AVLNode * Node){
+  return nodeHeight(Node->right)-nodeHeight(Node->left);
 }
 
 AVLNode *rightRotate(AVLNode *y) { 
@@ -50,9 +50,14 @@ AVLNode *rightRotate(AVLNode *y) {
     x->right = y; 
     y->left = xr; 
 
-    // Update heights 
     y->height = 1 + std::max(nodeHeight(y->left), nodeHeight(y->right)); 
     x->height = 1 + std::max(nodeHeight(x->left), nodeHeight(x->right)); 
+
+    x->BF = nodeBF(x);
+    y->BF = nodeBF(y);
+    if(xr){
+      xr->BF = nodeBF(xr);
+    }
     return x; 
 } 
 
@@ -65,38 +70,47 @@ AVLNode *leftRotate(AVLNode *x) {
 
     x->height = 1 + std::max(nodeHeight(x->left), nodeHeight(x->right)); 
     y->height = 1 + std::max(nodeHeight(y->left), nodeHeight(y->right));
+
+    x->BF = nodeBF(x);
+    y->BF = nodeBF(y);
+    if(yl){
+      yl->BF = nodeBF(yl);
+    }
+
     return y; 
 } 
-AVLNode * insetHelper(AVLNode * Node,std::int64_t key, std::int64_t value){
+AVLNode * insetHelper(AVLNode * Node,std::int64_t key, std::int64_t value,bool& skey){
   if (Node == nullptr){
     return new AVLNode(key,value);
   }
   if(key < Node->key){
-    Node->left = insetHelper(Node->left,key,value);
+    Node->left = insetHelper(Node->left,key,value,skey);
+  }else if(key > Node->key){
+    Node->right = insetHelper(Node->right,key,value,skey);
   }else{
-    Node->right = insetHelper(Node->right,key,value);
+    skey = false;
+    return Node;
   }
 
   Node->height = 1+ std::max(nodeHeight(Node->left), nodeHeight(Node->right));
 
   Node->BF = nodeBF(Node);
 
-  if (Node->BF > 1 && key < Node->left->key) {
+  if (Node->BF < -1 && key < Node->left->key) {
     return rightRotate(Node); 
   }
     
-
-  if (Node->BF < -1 && key > Node->right->key) {
+  if (Node->BF > 1 && key > Node->right->key) {
     return leftRotate(Node);
   }
    
-  if (Node->BF > 1 && key > Node->left->key) { 
+  if (Node->BF < -1 && key > Node->left->key) { 
     Node->left = leftRotate(Node->left); 
     return rightRotate(Node); 
   } 
 
     
-  if(Node->BF < -1 && key < Node->right->key) { 
+  if(Node->BF > 1 && key < Node->right->key) { 
     Node->right = rightRotate(Node->right); 
     return leftRotate(Node); 
   } 
@@ -105,15 +119,10 @@ AVLNode * insetHelper(AVLNode * Node,std::int64_t key, std::int64_t value){
 }
 
 bool AVLTree::insert(std::int64_t key, std::int64_t value) {
-  std::vector<std::int64_t> check = keys();
-  for (auto x:check){
-    if (x == key){
-      return false;
-    }
-  }
-  root_=insetHelper(root_,key,value);
+  bool check = true;
+  root_=insetHelper(root_,key,value,check);
   size_++;
-  return true;  
+  return check;  
 }
 
 AVLNode * minValNode(AVLNode * Node){
@@ -160,20 +169,20 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
 
   Node->BF = nodeBF(Node);
 
-  if (Node->BF > 1 && nodeBF(Node->left) >=0) {
+  if (Node->BF < -1 && nodeBF(Node->left) <0) {
     return rightRotate(Node); 
   }
 
-  if (Node->BF > 1 && nodeBF(Node->left)<0) { 
+  if (Node->BF <-1 && nodeBF(Node->left)>=0) { 
     Node->left = leftRotate(Node->left); 
     return rightRotate(Node); 
   } 
     
-  if (Node->BF < -1 && nodeBF(Node->right)<=0) {
+  if (Node->BF > 1 && nodeBF(Node->right)>0) {
     return leftRotate(Node);
   }
    
-  if(Node->BF < -1 && nodeBF(Node->right)>0) { 
+  if(Node->BF > 1 && nodeBF(Node->right)<=0) { 
     Node->right = rightRotate(Node->right); 
     return leftRotate(Node); 
   } 
@@ -265,10 +274,10 @@ int AVLTree::height() const {
     return 0;
   }
   root_->height = 1+ std::max(nodeHeight(root_->left), nodeHeight(root_->right));
-  return root_->height;  
+  return root_->left->height;  
 }
 
-void Adder( AVLNode*Node, double sum){
+void Adder( AVLNode*Node, double &sum){
   if(Node){
     Adder(Node->left,sum);
     sum += Node->height; 
