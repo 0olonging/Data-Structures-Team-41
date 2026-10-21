@@ -32,6 +32,7 @@ void Destroy(AVLNode * Node){
 }
 AVLTree::~AVLTree() {
   Destroy(root_);
+  root_ = nullptr;
 }
 
 std::int64_t nodeHeight(AVLNode * Node){
@@ -135,22 +136,22 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
     if ((Node->left == nullptr) ||(Node->right == nullptr)) {
       AVLNode *temp = Node->left ? Node->left : Node->right;
       if (temp == nullptr) {
-        temp = Node;
+        delete Node;
         Node = nullptr;
       } else{ 
         AVLNode * temp = Node->left ? Node->left : Node->right;
 				delete Node; 
 				return temp; 
       }
-        } else {
-            AVLNode * temp = minValNode(Node->right);
+    } else {
+      AVLNode * temp = minValNode(Node->right);
 
-            Node->key = temp->key;
-            Node->value = temp->value;
+      Node->key = temp->key;
+      Node->value = temp->value;
 
-            Node->right = eraseHelper(Node->right, temp->key);
-        }
+      Node->right = eraseHelper(Node->right, temp->key);
     }
+  }
 
   if(Node == nullptr){
     return Node;
