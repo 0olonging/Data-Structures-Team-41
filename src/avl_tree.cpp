@@ -268,7 +268,7 @@ int AVLTree::height() const {
   return root_->height;  
 }
 
-void Adder( AVLNode*Node, double sum){
+void Adder( AVLNode*Node, double& sum){
   if(Node){
     Adder(Node->left,sum);
     sum += Node->height; 
