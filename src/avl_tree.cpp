@@ -10,7 +10,7 @@
 struct AVLNode {
   std::int64_t key;
   std::int64_t value;
-  std::int64_t height=-1;
+  std::int64_t height=0;
   std::int64_t BF=0;
   AVLNode * left;
   AVLNode * right;
@@ -36,11 +36,11 @@ AVLTree::~AVLTree() {
 }
 
 std::int64_t nodeHeight(AVLNode * Node){
-  return Node?Node->height:0;
+  return Node?Node->height:-1;
 }
 
 std::int64_t nodeBF(AVLNode * Node){
-  return Node?(nodeHeight(Node->left))-nodeHeight(Node->right):0;
+  return Node?(nodeHeight(Node->right))-nodeHeight(Node->left):0;
 }
 
 AVLNode *rightRotate(AVLNode *y) { 
