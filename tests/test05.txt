@@ -1,0 +1,20 @@
+# Repeated root deletion
+
+I 40 1
+I 20 2
+I 60 3
+I 10 4
+I 30 5
+I 50 6
+I 70 7
+
+D 40
+D 50
+D 60
+D 30
+
+P
+X
+
+# EXPECTED:
+# 10 20 70
