@@ -138,6 +138,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
         temp = Node;
         Node = nullptr;
       } else{ 
+        AVLNode * temp = Node->left ? Node->left : Node->right;
 				delete Node; 
 				return temp; 
       }
@@ -145,6 +146,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
             AVLNode * temp = minValNode(Node->right);
 
             Node->key = temp->key;
+            Node->value = temp->value;
 
             Node->right = eraseHelper(Node->right, temp->key);
         }
