@@ -1,8 +1,0 @@
-# Target: AVL RR rotation case
-
-I 10 1
-I 20 2
-I 30 3
-
-P
-X
