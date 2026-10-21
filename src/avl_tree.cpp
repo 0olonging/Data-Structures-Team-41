@@ -32,6 +32,8 @@ void Destroy(AVLNode * Node){
 }
 AVLTree::~AVLTree() {
   Destroy(root_);
+  delete root_;
+  root_ = nullptr;
 }
 
 std::int64_t nodeHeight(AVLNode * Node){
