@@ -1,0 +1,10 @@
+# Duplicate insertion should not overwrite value
+
+I 50 100
+I 50 999
+S 50
+P
+
+# EXPECTED:
+# S 50 found 100
+# P 50

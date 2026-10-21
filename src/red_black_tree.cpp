@@ -229,10 +229,8 @@ void transplant(RBNode*& root, RBNode* nil, RBNode* u, RBNode* v)
     u->parent->right = v;
   }
 
-  if (v != nil)
-  {
-    v->parent = u->parent;
-  }
+  v->parent = u->parent;
+
 }
 
 void deleteFixup(RBNode*& root, RBNode* nil, RBNode* replacement)
@@ -443,11 +441,11 @@ bool RedBlackTree::erase(std::int64_t key) {
      successor->left->parent = successor;
      successor->color = curr->color;
 
-     if (removedColor == Color::Black)
-     {
-        deleteFixup(root_, nil_, replacement);
-     }
+  }
 
+  if (removedColor == Color::Black)
+  {
+    deleteFixup(root_, nil_, replacement);
   }
 
   // Deletion

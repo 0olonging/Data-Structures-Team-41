@@ -1,4 +1,5 @@
 # data/example.txt
+# FROM THE BRIEF
 # The expected output of ./tree rb, ./tree avl, and ./tree map with this file
 # is in example_rb.expected, example_avl.expected, and example_map.expected.
 # The X blocks for rb and avl show one valid tree each; yours may differ.

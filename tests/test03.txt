@@ -1,0 +1,15 @@
+# Delete node with one child
+
+I 20 1
+I 10 2
+I 5 3
+
+D 10
+
+S 10
+P
+X
+
+# EXPECTED:
+# S 10 absent
+# P 5 20
