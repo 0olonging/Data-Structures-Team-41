@@ -111,6 +111,7 @@ bool AVLTree::insert(std::int64_t key, std::int64_t value) {
     }
   }
   root_=insetHelper(root_,key,value);
+  size_++;
   return true;  
 }
 
@@ -138,7 +139,6 @@ AVLNode * eraseHelper(AVLNode *Node, size_t* size, std::int64_t key){
         Node = nullptr;
       } else{ 
 				delete Node; 
-        size--;
 				return temp; 
       }
         } else {
@@ -184,6 +184,7 @@ bool AVLTree::erase(std::int64_t key) {
   it = std::find(check.begin(),check.end(),key);
   if (it != check.end()){
     root_ = eraseHelper(root_, &size_, key);
+    size_--;
     return true;
   }
   return false;
