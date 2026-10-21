@@ -421,7 +421,7 @@ bool RedBlackTree::erase(std::int64_t key) {
 
      transplant(root_, nil_, curr, successor);
      successor->left = curr->left;
-     successor->left->parent = succesor;
+     successor->left->parent = successor;
      successor->color = curr->color;
 
      if (removedColor == Color::Black)

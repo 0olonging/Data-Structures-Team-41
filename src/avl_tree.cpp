@@ -122,14 +122,14 @@ AVLNode * minValNode(AVLNode * Node){
   return current;
 }
 
-AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
+AVLNode * eraseHelper(AVLNode *Node, size_t* size, std::int64_t key){
   if (Node == nullptr){
     return Node;
   }
   if(key < Node->key){
-    Node->left = eraseHelper(Node->left,key);
+    Node->left = eraseHelper(Node->left, size, key);
   }else if(key > Node->key) {
-    Node->right = eraseHelper(Node->right,key);
+    Node->right = eraseHelper(Node->right, size, key);
   }else {
     if ((Node->left == nullptr) ||(Node->right == nullptr)) {
       AVLNode *temp = Node->left ? Node->left : Node->right;
@@ -138,7 +138,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
         Node = nullptr;
       } else{ 
 				delete Node; 
-        size_--;
+        size--;
 				return temp; 
       }
         } else {
@@ -146,7 +146,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
 
             Node->key = temp->key;
 
-            Node->right = eraseHelper(Node->right, temp->key);
+            Node->right = eraseHelper(Node->right, size, temp->key);
         }
     }
 
@@ -183,7 +183,7 @@ bool AVLTree::erase(std::int64_t key) {
   std::vector<std::int64_t>::iterator it;
   it = std::find(check.begin(),check.end(),key);
   if (it != check.end()){
-    root_ = eraseHelper(root_,key);
+    root_ = eraseHelper(root_, &size_, key);
     return true;
   }
   return false;
