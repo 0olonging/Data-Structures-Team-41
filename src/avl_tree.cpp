@@ -143,6 +143,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
       } else{ // One child case
         //AVLNode *temp = Node->left ? Node->left : Node->right;
 				delete Node; // delete the current node
+        size_--;
 				return temp; // return the child to be linked to the parent
       }
         } else {
@@ -264,6 +265,7 @@ int AVLTree::height() const {
   if(root_ == nullptr){
     return 0;
   }
+  root_->height = 1+ std::max(nodeHeight(root_->left), nodeHeight(root_->right));
   return root_->height;  
 }
 
