@@ -10,7 +10,7 @@
 struct AVLNode {
   std::int64_t key;
   std::int64_t value;
-  std::int64_t height = 1;
+  std::int64_t height=-1;
   std::int64_t BF=0;
   AVLNode * left;
   AVLNode * right;
@@ -40,7 +40,7 @@ std::int64_t nodeHeight(AVLNode * Node){
 }
 
 std::int64_t nodeBF(AVLNode * Node){
-  return Node?nodeHeight(Node->left)-nodeHeight(Node->right):0;
+  return Node?(nodeHeight(Node->left))-nodeHeight(Node->right):0;
 }
 
 AVLNode *rightRotate(AVLNode *y) { 
@@ -136,7 +136,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
     if ((Node->left == nullptr) ||(Node->right == nullptr)) {
       AVLNode *temp = Node->left ? Node->left : Node->right;
       if (temp == nullptr) {
-        delete Node;
+        delete Node; 
         Node = nullptr;
       } else{ 
         AVLNode * temp = Node->left ? Node->left : Node->right;
@@ -160,20 +160,20 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
 
   Node->BF = nodeBF(Node);
 
-  if (Node->BF > 1 && Node->left->BF>=0) {
+  if (Node->BF > 1 && nodeBF(Node->left) >=0) {
     return rightRotate(Node); 
   }
 
-  if (Node->BF > 1 &&  Node->left->BF<0) { 
+  if (Node->BF > 1 && nodeBF(Node->left)<0) { 
     Node->left = leftRotate(Node->left); 
     return rightRotate(Node); 
   } 
     
-  if (Node->BF < -1 && Node->right->BF<=0) {
+  if (Node->BF < -1 && nodeBF(Node->right)<=0) {
     return leftRotate(Node);
   }
    
-  if(Node->BF < -1 && Node->right->BF>0) { 
+  if(Node->BF < -1 && nodeBF(Node->right)>0) { 
     Node->right = rightRotate(Node->right); 
     return leftRotate(Node); 
   } 
@@ -232,6 +232,7 @@ std::vector<std::int64_t> AVLTree::keys() const {
 
 void treeStruct(const AVLNode*Node,std::ostream & os){
   if(Node){
+    treeStruct(Node->left,os);
     os<< Node->key<<' '<<Node->BF<<' ';
     if(Node->left){
       os<< Node->left->key<<' ';
@@ -244,7 +245,6 @@ void treeStruct(const AVLNode*Node,std::ostream & os){
       os<< '-'<<' ';
     }
     os<<'\n';
-    treeStruct(Node->left,os);
     treeStruct(Node->right,os);
   }
 }
