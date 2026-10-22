@@ -298,8 +298,11 @@ double AVLTree::average_depth() const {
   double sum=0.0;
   for(auto x: keys()){
     double depth = 0.0;
-    AVLNode *Searcher = searchwithdepth(root_,std::int64_t key,depth)
-    sum+=depth;
+    AVLNode *Searcher = searchwithdepth(root_,x,depth);
+    if (Searcher){
+      sum+=depth;
+    }
+    
   }
   return sum/size();
 }

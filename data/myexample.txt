@@ -2,11 +2,11 @@
 # The expected output of ./tree rb, ./tree avl, and ./tree map with this file
 # is in example_rb.expected, example_avl.expected, and example_map.expected.
 # The X blocks for rb and avl show one valid tree each; yours may differ.
-I 10 400
-I 20 400
 I 30 400
 I 40 400
-D 50
+I 20 400
+I 10 400
+I 50 500
 P
 X
 G
