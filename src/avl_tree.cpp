@@ -260,7 +260,7 @@ void treeStruct(const AVLNode*Node,std::ostream & os){
 
 void AVLTree::export_shape(std::ostream & out) const {
 if(root_ == nullptr){
-  out<<"root "<<" -"<<'\n';
+  out<<"root "<<"-"<<'\n';
   return;
 }
   out<<"root "<<root_->key<<'\n';
