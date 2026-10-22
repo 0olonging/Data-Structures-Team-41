@@ -30,6 +30,7 @@ void Destroy(AVLNode * Node){
   Destroy(Node->right);
   delete Node;
 }
+
 AVLTree::~AVLTree() {
   Destroy(root_);
   root_ = nullptr;
@@ -185,7 +186,6 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key, bool& nkey){
   return Node;
 }
 
-
 bool AVLTree::erase(std::int64_t key) {
   bool check = true;
   root_ = eraseHelper(root_, key,check);
@@ -271,13 +271,6 @@ int AVLTree::height() const {
   return root_->height;  
 }
 
-void Adder( AVLNode*Node, double& sum){
-  if(Node){
-    Adder(Node->left,sum);
-    sum += Node->height; 
-    Adder(Node->right,sum);
-  }
-}
 void searchwithdepth(AVLNode * Node,std::int64_t key,double& depth){
   if(Node == nullptr || key==Node->key){
     return;
