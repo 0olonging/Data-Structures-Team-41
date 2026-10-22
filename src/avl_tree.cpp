@@ -268,7 +268,7 @@ int AVLTree::height() const {
     return -1;
   }
   root_->height = 1+ std::max(nodeHeight(root_->left), nodeHeight(root_->right));
-  return root_->left->height;  
+  return root_->height;  
 }
 
 void Adder( AVLNode*Node, double& sum){
