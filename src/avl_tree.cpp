@@ -114,7 +114,9 @@ AVLNode * insetHelper(AVLNode * Node,std::int64_t key, std::int64_t value,bool& 
 bool AVLTree::insert(std::int64_t key, std::int64_t value) {
   bool check = true;
   root_=insetHelper(root_,key,value,check);
-  size_++;
+  if(check){
+    size_++;
+  }
   return check;  
 }
 
@@ -187,7 +189,9 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key, bool& nkey){
 bool AVLTree::erase(std::int64_t key) {
   bool check = true;
   root_ = eraseHelper(root_, key,check);
-  size_--;
+  if(check){
+    size_--;
+  }
   return check;
 }
 
