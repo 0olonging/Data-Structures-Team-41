@@ -271,19 +271,14 @@ int AVLTree::height() const {
   return root_->height;  
 }
 
-void Adder( AVLNode*Node, double& sum){
-  if(Node){
-    Adder(Node->left,sum);
-    sum += Node->height; 
-    Adder(Node->right,sum);
-  }
-}
-
 double AVLTree::average_depth() const {
   if(root_ == nullptr){
     return 0;
   }
+  std::vector<std::int64_t> keysintree = keys();
   double sum=0;
-  Adder(root_,sum);
-  return sum/size();  
+  for(auto x: keysintree){
+    AVLNode * Searcher = search(root_,x);
+    sum+=Searcher->height;
+  }
 }
