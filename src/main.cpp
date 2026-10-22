@@ -112,7 +112,7 @@ bool execute(std::string_view line, Tree &tree, std::ostream &out) {
     if constexpr (std::is_same_v<Tree, MapBaseline>) {
       out << "G unsupported\n";
     } else {
-      out <<tree.size()<<'\n';
+      out <<tree.average_depth()<<'\n';
     }
     return true;
   }

@@ -271,15 +271,35 @@ int AVLTree::height() const {
   return root_->height;  
 }
 
+void Adder( AVLNode*Node, double& sum){
+  if(Node){
+    Adder(Node->left,sum);
+    sum += Node->height; 
+    Adder(Node->right,sum);
+  }
+}
+AVLNode * searchwithdepth(AVLNode * Node,std::int64_t key,double& depth){
+  if(Node == nullptr || key==Node->key){
+    return Node;
+  }
+  if(key<Node->key){
+    ++depth;
+    return searchwithdepth(Node->left,key,depth);
+  }else{
+    ++depth;
+    return searchwithdepth(Node->right,key,depth);
+  }
+
+}
 double AVLTree::average_depth() const {
   if(root_ == nullptr){
     return 0;
   }
-  std::vector<std::int64_t> keysintree = keys();
-  double sum=0;
-  for(auto x: keysintree){
-    AVLNode * Searcher = search(root_,x);
-    sum+=Searcher->height;
+  double sum=0.0;
+  for(auto x: keys()){
+    double depth = 0.0;
+    AVLNode *Searcher = searchwithdepth(AVLNode * Node,std::int64_t key,depth)
+    sum+=depth;
   }
   return sum/size();
 }
