@@ -108,6 +108,14 @@ bool execute(std::string_view line, Tree &tree, std::ostream &out) {
     }
     return true;
   }
+  if (command == 'G' && n_fields == 1) {
+    if constexpr (std::is_same_v<Tree, MapBaseline>) {
+      out << "G unsupported\n";
+    } else {
+      out <<tree.size()<<'\n';
+    }
+    return true;
+  }
   return false;
 }
 

@@ -169,20 +169,20 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
 
   Node->BF = nodeBF(Node);
 
-  if (Node->BF < -1 && nodeBF(Node->left) <0) {
+  if (Node->BF < -1 && nodeBF(Node->left) <=0) {
     return rightRotate(Node); 
   }
 
-  if (Node->BF <-1 && nodeBF(Node->left)>=0) { 
+  if (Node->BF <-1 && nodeBF(Node->left)>0) { 
     Node->left = leftRotate(Node->left); 
     return rightRotate(Node); 
   } 
     
-  if (Node->BF > 1 && nodeBF(Node->right)>0) {
+  if (Node->BF > 1 && nodeBF(Node->right)>=0) {
     return leftRotate(Node);
   }
    
-  if(Node->BF > 1 && nodeBF(Node->right)<=0) { 
+  if(Node->BF > 1 && nodeBF(Node->right)<0) { 
     Node->right = rightRotate(Node->right); 
     return leftRotate(Node); 
   } 
@@ -226,6 +226,7 @@ std::optional<std::int64_t> AVLTree::find(std::int64_t key) const {
 std::size_t AVLTree::size() const {
   return size_;
 }
+
 void keysInOrder( std::vector<std::int64_t>& vec ,AVLNode*Node){
   if(Node){
     keysInOrder(vec,Node->left);
