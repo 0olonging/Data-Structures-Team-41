@@ -55,9 +55,6 @@ AVLNode *rightRotate(AVLNode *y) {
 
     x->BF = nodeBF(x);
     y->BF = nodeBF(y);
-    if(xr){
-      xr->BF = nodeBF(xr);
-    }
     return x; 
 } 
 
@@ -73,10 +70,6 @@ AVLNode *leftRotate(AVLNode *x) {
 
     x->BF = nodeBF(x);
     y->BF = nodeBF(y);
-    if(yl){
-      yl->BF = nodeBF(yl);
-    }
-
     return y; 
 } 
 AVLNode * insetHelper(AVLNode * Node,std::int64_t key, std::int64_t value,bool& skey){
@@ -133,14 +126,15 @@ AVLNode * minValNode(AVLNode * Node){
   return current;
 }
 
-AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
+AVLNode * eraseHelper(AVLNode *Node, std::int64_t key, bool& nkey){
   if (Node == nullptr){
+    nkey = false;
     return Node;
   }
   if(key < Node->key){
-    Node->left = eraseHelper(Node->left, key);
+    Node->left = eraseHelper(Node->left, key,nkey);
   }else if(key > Node->key) {
-    Node->right = eraseHelper(Node->right, key);
+    Node->right = eraseHelper(Node->right, key,nkey);
   }else {
     if ((Node->left == nullptr) ||(Node->right == nullptr)) {
       AVLNode *temp = Node->left ? Node->left : Node->right;
@@ -158,7 +152,7 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
       Node->key = temp->key;
       Node->value = temp->value;
 
-      Node->right = eraseHelper(Node->right, temp->key);
+      Node->right = eraseHelper(Node->right, temp->key,nkey);
     }
   }
 
@@ -191,15 +185,10 @@ AVLNode * eraseHelper(AVLNode *Node, std::int64_t key){
 
 
 bool AVLTree::erase(std::int64_t key) {
-  std::vector<std::int64_t> check = keys();
-  std::vector<std::int64_t>::iterator it;
-  it = std::find(check.begin(),check.end(),key);
-  if (it != check.end()){
-    root_ = eraseHelper(root_, key);
-    size_--;
-    return true;
-  }
-  return false;
+  bool check = true;
+  root_ = eraseHelper(root_, key,check);
+  size_--;
+  return check;
 }
 
 AVLNode * search(AVLNode * Node,std::int64_t key){
