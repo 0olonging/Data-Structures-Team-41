@@ -281,4 +281,5 @@ double AVLTree::average_depth() const {
     AVLNode * Searcher = search(root_,x);
     sum+=Searcher->height;
   }
+  return sum/size();
 }
