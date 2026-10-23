@@ -26,6 +26,7 @@
 #include <random>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "avl_tree.h"
 #include "map_baseline.h"
@@ -114,7 +115,7 @@ void benchmark_erase(ankerl::nanobench::Bench &bench, const std::string &name,
       });
 }
 
-// Get the height for the 
+// Get the height (check how fast it takes for tree to return))
 template <typename Tree>
 void benchmark_height(
     ankerl::nanobench::Bench &bench,
@@ -128,6 +129,7 @@ void benchmark_height(
         tree.insert(key, key);
     }
 
+    // Start bench test for how fast it takes to get height
     bench.batch(1)
         .run(name + " height, n = " + std::to_string(insert_keys.size()), [&] {
 
@@ -137,16 +139,36 @@ void benchmark_height(
         });
 }
 
+// Compare heights
+template <typename Tree>
+void compare_height(
+    const std::string &name,
+    const std::vector<std::int64_t> &insert_keys)
+{
+    Tree tree;
+
+    // Insert keys before timing
+    for (const std::int64_t key : insert_keys) {
+        tree.insert(key, key);
+    }
+
+    // Get how many nodes and the height of tree
+    std::cout << name
+              << ", n = " << insert_keys.size()
+              << ", height = " << tree.height()
+              << '\n';
+}
+
 }  // namespace
 
 int main() {
   // Short operations need many iterations per measurement for stable results;
   // nanobench prints a warning when a measurement is unstable.
-  ankerl::nanobench::Bench find_bench;
-  find_bench.title("Search for existing keys")
-      .unit("find")
-      .warmup(1'000)
-      .minEpochIterations(200'000);
+  // ankerl::nanobench::Bench find_bench;
+  // find_bench.title("Search for existing keys")
+  //     .unit("find")
+  //     .warmup(1'000)
+  //     .minEpochIterations(200'000);
 
   // Height benchmark
   ankerl::nanobench::Bench height_bench;
@@ -165,14 +187,14 @@ int main() {
     std::vector<std::int64_t> random_keys = sorted_keys;
     std::shuffle(random_keys.begin(), random_keys.end(), rng);
 
-    benchmark_find<MapBaseline>(find_bench, "map, sorted", sorted_keys);
-    benchmark_find<MapBaseline>(find_bench, "map, random", random_keys);
+    // benchmark_find<MapBaseline>(find_bench, "map, sorted", sorted_keys);
+    // benchmark_find<MapBaseline>(find_bench, "map, random", random_keys);
     
-    benchmark_find<RedBlackTree>(find_bench, "rb, sorted", sorted_keys);
-    benchmark_find<RedBlackTree>(find_bench, "rb, random", random_keys);
+    // benchmark_find<RedBlackTree>(find_bench, "rb, sorted", sorted_keys);
+    // benchmark_find<RedBlackTree>(find_bench, "rb, random", random_keys);
     
-    benchmark_find<AVLTree>(find_bench, "avl, sorted", sorted_keys);
-    benchmark_find<AVLTree>(find_bench, "avl, random", random_keys);
+    // benchmark_find<AVLTree>(find_bench, "avl, sorted", sorted_keys);
+    // benchmark_find<AVLTree>(find_bench, "avl, random", random_keys);
 
     // benchmark_height<MapBaseline>(height_bench, "map, sorted", sorted_keys);
     // benchmark_height<MapBaseline>(height_bench, "map, random", random_keys);
@@ -182,68 +204,74 @@ int main() {
 
     benchmark_height<AVLTree>(height_bench, "avl, sorted", sorted_keys);
     benchmark_height<AVLTree>(height_bench, "avl, random", random_keys);
+
+    compare_height<AVLTree>("AVL sorted", sorted_keys);
+    compare_height<AVLTree>("AVL random", random_keys);
+
+    compare_height<RedBlackTree>("RB sorted", sorted_keys);
+    compare_height<RedBlackTree>("RB random", random_keys);
   }
 
   // Each insertion measurement fills one empty structure, so every epoch
   // consists of exactly one iteration, and nanobench reports the median over
   // the epochs, as for deletion below. batch() in benchmark_insert reports the
   // time per inserted key rather than per bulk insertion.
-  ankerl::nanobench::Bench insert_bench;
-  insert_bench.title("Insert n keys into an empty structure")
-      .unit("insert")
-      .epochs(11)
-      .epochIterations(1);
+  // ankerl::nanobench::Bench insert_bench;
+  // insert_bench.title("Insert n keys into an empty structure")
+  //     .unit("insert")
+  //     .epochs(11)
+  //     .epochIterations(1);
 
-  for (const std::size_t n : kSizes) {
-    std::vector<std::int64_t> sorted_keys(n);
-    std::iota(sorted_keys.begin(), sorted_keys.end(), std::int64_t{0});
-    std::vector<std::int64_t> random_keys = sorted_keys;
-    std::shuffle(random_keys.begin(), random_keys.end(), rng);
+  // for (const std::size_t n : kSizes) {
+  //   std::vector<std::int64_t> sorted_keys(n);
+  //   std::iota(sorted_keys.begin(), sorted_keys.end(), std::int64_t{0});
+  //   std::vector<std::int64_t> random_keys = sorted_keys;
+  //   std::shuffle(random_keys.begin(), random_keys.end(), rng);
 
-    benchmark_insert<MapBaseline>(insert_bench, "map, sorted", sorted_keys);
-    benchmark_insert<MapBaseline>(insert_bench, "map, random", random_keys);
+  //   benchmark_insert<MapBaseline>(insert_bench, "map, sorted", sorted_keys);
+  //   benchmark_insert<MapBaseline>(insert_bench, "map, random", random_keys);
 
-    benchmark_insert<RedBlackTree>(insert_bench, "rb, sorted", sorted_keys);
-    benchmark_insert<RedBlackTree>(insert_bench, "rb, random", random_keys);
+  //   benchmark_insert<RedBlackTree>(insert_bench, "rb, sorted", sorted_keys);
+  //   benchmark_insert<RedBlackTree>(insert_bench, "rb, random", random_keys);
     
-    benchmark_insert<AVLTree>(insert_bench, "avl, sorted", sorted_keys);
-    benchmark_insert<AVLTree>(insert_bench, "avl, random", random_keys);
-  }
+  //   benchmark_insert<AVLTree>(insert_bench, "avl, sorted", sorted_keys);
+  //   benchmark_insert<AVLTree>(insert_bench, "avl, random", random_keys);
+  // }
 
-  // Each deletion measurement consumes one full structure, so every epoch
-  // consists of exactly one iteration, and nanobench reports the median over
-  // the epochs. For small n, one iteration takes only microseconds, and
-  // nanobench may mark the result as unstable; its advice to increase
-  // minEpochIterations has no effect here, so treat such results with caution
-  // and rely on larger n.
-  ankerl::nanobench::Bench erase_bench;
-  erase_bench.title("Delete all n keys from a full structure")
-      .unit("erase")
-      .epochs(11)
-      .epochIterations(1);
+  // // Each deletion measurement consumes one full structure, so every epoch
+  // // consists of exactly one iteration, and nanobench reports the median over
+  // // the epochs. For small n, one iteration takes only microseconds, and
+  // // nanobench may mark the result as unstable; its advice to increase
+  // // minEpochIterations has no effect here, so treat such results with caution
+  // // and rely on larger n.
+  // ankerl::nanobench::Bench erase_bench;
+  // erase_bench.title("Delete all n keys from a full structure")
+  //     .unit("erase")
+  //     .epochs(11)
+  //     .epochIterations(1);
 
-  for (const std::size_t n : kSizes) {
-    std::vector<std::int64_t> sorted_keys(n);
-    std::iota(sorted_keys.begin(), sorted_keys.end(), std::int64_t{0});
-    std::vector<std::int64_t> insert_keys = sorted_keys;
-    std::shuffle(insert_keys.begin(), insert_keys.end(), rng);
-    std::vector<std::int64_t> erase_keys = sorted_keys;
-    std::shuffle(erase_keys.begin(), erase_keys.end(), rng);
+  // for (const std::size_t n : kSizes) {
+  //   std::vector<std::int64_t> sorted_keys(n);
+  //   std::iota(sorted_keys.begin(), sorted_keys.end(), std::int64_t{0});
+  //   std::vector<std::int64_t> insert_keys = sorted_keys;
+  //   std::shuffle(insert_keys.begin(), insert_keys.end(), rng);
+  //   std::vector<std::int64_t> erase_keys = sorted_keys;
+  //   std::shuffle(erase_keys.begin(), erase_keys.end(), rng);
 
-    benchmark_erase<MapBaseline>(erase_bench, "map, sorted", sorted_keys,
-                                  sorted_keys);
-    benchmark_erase<MapBaseline>(erase_bench, "map, random", insert_keys,
-                                  erase_keys);
+  //   benchmark_erase<MapBaseline>(erase_bench, "map, sorted", sorted_keys,
+  //                                 sorted_keys);
+  //   benchmark_erase<MapBaseline>(erase_bench, "map, random", insert_keys,
+  //                                 erase_keys);
   
     
-    benchmark_erase<RedBlackTree>(erase_bench, "rb, sorted", sorted_keys,
-                                  sorted_keys);
-    benchmark_erase<RedBlackTree>(erase_bench, "rb, random", insert_keys,
-                                  erase_keys);
+  //   benchmark_erase<RedBlackTree>(erase_bench, "rb, sorted", sorted_keys,
+  //                                 sorted_keys);
+  //   benchmark_erase<RedBlackTree>(erase_bench, "rb, random", insert_keys,
+  //                                 erase_keys);
 
-    benchmark_erase<AVLTree>(erase_bench, "avl, sorted", sorted_keys,
-                             sorted_keys);
-    benchmark_erase<AVLTree>(erase_bench, "avl, random", insert_keys,
-                             erase_keys);
-  }
+  //   benchmark_erase<AVLTree>(erase_bench, "avl, sorted", sorted_keys,
+  //                            sorted_keys);
+  //   benchmark_erase<AVLTree>(erase_bench, "avl, random", insert_keys,
+  //                            erase_keys);
+  // }
 }

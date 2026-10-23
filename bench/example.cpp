@@ -134,10 +134,10 @@ int main() {
 
     benchmark_find<MapBaseline>(find_bench, "map, sorted", sorted_keys);
     benchmark_find<MapBaseline>(find_bench, "map, random", random_keys);
-    // benchmark_find<RedBlackTree>(find_bench, "rb, sorted", sorted_keys);
-    // benchmark_find<RedBlackTree>(find_bench, "rb, random", random_keys);
-    // benchmark_find<AVLTree>(find_bench, "avl, sorted", sorted_keys);
-    // benchmark_find<AVLTree>(find_bench, "avl, random", random_keys);
+    benchmark_find<RedBlackTree>(find_bench, "rb, sorted", sorted_keys);
+    benchmark_find<RedBlackTree>(find_bench, "rb, random", random_keys);
+    benchmark_find<AVLTree>(find_bench, "avl, sorted", sorted_keys);
+    benchmark_find<AVLTree>(find_bench, "avl, random", random_keys);
   }
 
   // Each insertion measurement fills one empty structure, so every epoch
@@ -158,10 +158,10 @@ int main() {
 
     benchmark_insert<MapBaseline>(insert_bench, "map, sorted", sorted_keys);
     benchmark_insert<MapBaseline>(insert_bench, "map, random", random_keys);
-    // benchmark_insert<RedBlackTree>(insert_bench, "rb, sorted", sorted_keys);
-    // benchmark_insert<RedBlackTree>(insert_bench, "rb, random", random_keys);
-    // benchmark_insert<AVLTree>(insert_bench, "avl, sorted", sorted_keys);
-    // benchmark_insert<AVLTree>(insert_bench, "avl, random", random_keys);
+    benchmark_insert<RedBlackTree>(insert_bench, "rb, sorted", sorted_keys);
+    benchmark_insert<RedBlackTree>(insert_bench, "rb, random", random_keys);
+    benchmark_insert<AVLTree>(insert_bench, "avl, sorted", sorted_keys);
+    benchmark_insert<AVLTree>(insert_bench, "avl, random", random_keys);
   }
 
   // Each deletion measurement consumes one full structure, so every epoch
@@ -188,13 +188,13 @@ int main() {
                                  sorted_keys);
     benchmark_erase<MapBaseline>(erase_bench, "map, random", insert_keys,
                                  erase_keys);
-    // benchmark_erase<RedBlackTree>(erase_bench, "rb, sorted", sorted_keys,
-    //                               sorted_keys);
-    // benchmark_erase<RedBlackTree>(erase_bench, "rb, random", insert_keys,
-    //                               erase_keys);
-    // benchmark_erase<AVLTree>(erase_bench, "avl, sorted", sorted_keys,
-    //                          sorted_keys);
-    // benchmark_erase<AVLTree>(erase_bench, "avl, random", insert_keys,
-    //                          erase_keys);
+    benchmark_erase<RedBlackTree>(erase_bench, "rb, sorted", sorted_keys,
+                                  sorted_keys);
+    benchmark_erase<RedBlackTree>(erase_bench, "rb, random", insert_keys,
+                                  erase_keys);
+    benchmark_erase<AVLTree>(erase_bench, "avl, sorted", sorted_keys,
+                             sorted_keys);
+    benchmark_erase<AVLTree>(erase_bench, "avl, random", insert_keys,
+                             erase_keys);
   }
 }
