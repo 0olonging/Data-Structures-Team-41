@@ -174,6 +174,9 @@ int main() {
     benchmark_find<AVLTree>(find_bench, "avl, sorted", sorted_keys);
     benchmark_find<AVLTree>(find_bench, "avl, random", random_keys);
 
+    // benchmark_height<MapBaseline>(height_bench, "map, sorted", sorted_keys);
+    // benchmark_height<MapBaseline>(height_bench, "map, random", random_keys);
+
     benchmark_height<RedBlackTree>(height_bench, "rb, sorted", sorted_keys);
     benchmark_height<RedBlackTree>(height_bench, "rb, random", random_keys);
 
@@ -197,8 +200,9 @@ int main() {
     std::vector<std::int64_t> random_keys = sorted_keys;
     std::shuffle(random_keys.begin(), random_keys.end(), rng);
 
-    // benchmark_insert<MapBaseline>(insert_bench, "map, sorted", sorted_keys);
-    // benchmark_insert<MapBaseline>(insert_bench, "map, random", random_keys);
+    benchmark_insert<MapBaseline>(insert_bench, "map, sorted", sorted_keys);
+    benchmark_insert<MapBaseline>(insert_bench, "map, random", random_keys);
+
     benchmark_insert<RedBlackTree>(insert_bench, "rb, sorted", sorted_keys);
     benchmark_insert<RedBlackTree>(insert_bench, "rb, random", random_keys);
     
@@ -226,10 +230,10 @@ int main() {
     std::vector<std::int64_t> erase_keys = sorted_keys;
     std::shuffle(erase_keys.begin(), erase_keys.end(), rng);
 
-    // benchmark_erase<MapBaseline>(erase_bench, "map, sorted", sorted_keys,
-    //                              sorted_keys);
-    // benchmark_erase<MapBaseline>(erase_bench, "map, random", insert_keys,
-    //                              erase_keys);
+    benchmark_erase<MapBaseline>(erase_bench, "map, sorted", sorted_keys,
+                                  sorted_keys);
+    benchmark_erase<MapBaseline>(erase_bench, "map, random", insert_keys,
+                                  erase_keys);
   
     
     benchmark_erase<RedBlackTree>(erase_bench, "rb, sorted", sorted_keys,
